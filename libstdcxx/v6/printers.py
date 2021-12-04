@@ -459,11 +459,11 @@ class StdVectorPrinter:
             bl = 8 * itype.sizeof
             length   = bl * (finish - start) + fo
             capacity = bl * (end - start)
-            return ('%s<bool> of length %d, capacity %d'
-                    % (self.typename, int (length), int (capacity)))
+            return ('%s<bool> of length %d'
+                    % (self.typename, int (length) ))
         else:
-            return ('%s of length %d, capacity %d'
-                    % (self.typename, int (finish - start), int (end - start)))
+            return ('%s of length %d'
+                    % (self.typename, int (finish - start) ))
 
     def display_hint(self):
         return 'array'

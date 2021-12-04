@@ -825,12 +825,14 @@ class StdBitsetPrinter:
 			bit = 0
 			while w != 0:
 				if (w & 1) != 0:
-					# Another spot where we could use 'set'?
-					result.append(('[%d]' % (byte * tsize * 8 + bit), 1))
+					result.append(('', byte * tsize * 8 + bit))
 				bit = bit + 1
 				w = w >> 1
 			byte = byte + 1
 		return result
+
+	def display_hint (self):
+		return 'array'  # same as StdSetPrinter
 
 class StdDequePrinter:
 	"Print a std::deque"

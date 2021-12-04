@@ -767,11 +767,12 @@ class StdSetPrinter:
 			item = next(self.rbiter)
 			item = item.cast(self.type).dereference()
 			item = get_value_from_Rb_tree_node(item)
-			# FIXME: this is weird ... what to do?
-			# Maybe a 'set' display hint?
 			result = ('[%d]' % self.count, item)
 			self.count = self.count + 1
 			return result
+
+	def display_hint (self):
+		return 'array'  # NOTE hack, but better than indexed
 
 	def __init__ (self, typename, val):
 		self.typename = strip_versioned_namespace(typename)

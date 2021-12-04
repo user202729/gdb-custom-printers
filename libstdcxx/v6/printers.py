@@ -176,6 +176,7 @@ def is_specialization_of(x, template_name):
 
 def strip_versioned_namespace(typename):
 	global _versioned_namespace
+	typename=typename.replace("::__debug::", "::")
 	if _versioned_namespace:
 		return typename.replace(_versioned_namespace, '')
 	return typename

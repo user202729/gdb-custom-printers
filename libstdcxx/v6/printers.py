@@ -701,6 +701,39 @@ class StdDebugIteratorPrinter:
 		safe_seq = self.val.cast(base_type)['_M_sequence']
 		if not safe_seq:
 			return str(self.val.cast(itype))
+
+		seq_type = self.val.type.template_argument(1)
+		try:
+			seq = safe_seq.dereference().cast(seq_type)
+			match = libstdcxx_printer.compiled_rx.match(libstdcxx_printer.get_basic_type(seq_type))
+			if match:
+				basename = match.group(1)
+				try:
+					# https://stackoverflow.com/questions/22774067/gdb-python-api-is-it-possible-to-make-a-call-to-a-class-struct-method/22798055
+					if bool(
+							gdb.parse_and_eval(
+								"(*("+str(self.val.type)+"*)("+str(self.val.address)+"))._M_is_end()"
+								)
+							):
+						return "end iterator"
+				except gdb.error:
+					print("check end -- easy method does not work...")
+					import traceback
+					traceback.print_exc()
+
+					if basename.endswith("::vector"):
+						if seq["_M_impl"]["_M_finish"] == self.val["_M_current"]:
+							return "end iterator"
+					if basename.endswith(("::set", "::map", "::unordered_set", "::unordered_map")):
+						if seq['_M_t']['_M_impl']['_M_header'].address == self.val["_M_node"]:
+							return "end iterator"
+
+		except gdb.error:
+			print("check end -- unknown error")
+			import traceback
+			traceback.print_exc()
+			pass
+
 		if self.val['_M_version'] != safe_seq['_M_version']:
 			return "invalid iterator"
 		return str(self.val.cast(itype))
